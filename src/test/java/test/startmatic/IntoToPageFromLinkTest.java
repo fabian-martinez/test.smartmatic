@@ -5,15 +5,20 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 
+import java.time.Duration;
 import java.util.List;
+
+import static org.junit.Assert.*;
 
 public class IntoToPageFromLinkTest {
     static WebDriver driver;
 
     @BeforeClass
-    public static void setUp(){
+    public static void setUpTestSet(){
         //setting the driver executable
         System.setProperty("webdriver.chrome.driver", "src/test/resources/chromedriver");
         //Initiating your chromedriver
@@ -21,20 +26,30 @@ public class IntoToPageFromLinkTest {
     }
 
     @Test
-    public void IntoToCeleniumDocumentationFromCeleniumHomePage(){
+    public void IntoToSeleniumDocumentationFromSeleniumHomePage(){
         //open browser with desried URL
         driver.get("https://www.selenium.dev/");
 
-        List<WebElement> buttoms = driver.findElements(new By.ByCssSelector(".selenium-button selenium-webdriver"));
+        List<WebElement> buttons = driver.findElements(new By.ByXPath("//a[contains(@class, 'selenium-button') and contains(@class, 'selenium-webdriver')]"));
 
-        for (WebElement buttom:buttoms){
-            System.out.println(buttom.getText());
+        WebElement button = null;
+
+        if (buttons.size() == 1) {
+            button = buttons.get(0);
         }
+        assertNotNull(button);
+        assertEquals(button.getText(),"READ MORE");
+
+        button.click();
+
+        WebElement h1SecondPage = new WebDriverWait(driver, 10).until(driver -> driver.findElement(By.tagName("h1")));
+
+        assertEquals(h1SecondPage.getText(),"WebDriver");
 
     }
 
     @AfterClass
-    public static void finishAll(){
+    public static void finishTestSet(){
         //closing the browser
         driver.close();
         System.out.println("Finish Tests");
