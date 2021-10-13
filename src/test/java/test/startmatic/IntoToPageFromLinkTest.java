@@ -2,6 +2,7 @@ package test.startmatic;
 
 import org.junit.*;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -11,6 +12,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.junit.Assert.*;
 
@@ -38,14 +41,33 @@ public class IntoToPageFromLinkTest {
             button = buttons.get(0);
         }
         assertNotNull(button);
-        assertEquals(button.getText(),"READ MORE");
+        assertEquals("READ MORE", button.getText());
 
         button.click();
 
-        WebElement h1SecondPage = new WebDriverWait(driver, 10).until(driver -> driver.findElement(By.tagName("h1")));
+        WebElement h1SecondPage = new WebDriverWait(driver, 10)
+                .until(driver -> driver.findElement(By.tagName("h1")));
 
-        assertEquals(h1SecondPage.getText(),"WebDriver");
+        assertEquals("WebDriver", h1SecondPage.getText());
 
+    }
+
+    @Test
+    public void FillFormAndValidate(){
+        driver.get("https://www.selenium.dev/documentation/webdriver/");
+
+        WebElement search = driver.findElement(By.tagName("input"));
+
+        search.sendKeys("WebDriver" + Keys.ENTER);
+
+        WebElement h2Search = new WebDriverWait(driver, 10)
+                .until(driver -> driver.findElement(By.tagName("h2")));
+
+        assertEquals(h2Search.getText(),"Search Results");
+
+        String url = driver.getCurrentUrl();
+
+        assertEquals("https://www.selenium.dev/search/?q=WebDriver", url);
     }
 
     @AfterClass
